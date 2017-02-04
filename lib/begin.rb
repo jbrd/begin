@@ -1,2 +1,2 @@
-require "begin/cli"
-require "begin/version"
+require 'begin/cli'
+require 'begin/version'

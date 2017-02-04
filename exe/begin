@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
 
-require "begin"
-
+require 'begin'
 Begin::CLI.start(ARGV)
