@@ -1,3 +1,4 @@
+require 'begin/repository'
 require 'begin/version'
 require 'thor'
 
@@ -16,7 +17,7 @@ module Begin
 
     desc 'install PATH', 'Installs a template given its PATH'
     def install(path)
-      puts "Installing template #{path}"
+      repository.install path
     end
 
     desc 'uninstall TEMPLATE', 'Uninstalls the named TEMPLATE'
@@ -33,6 +34,12 @@ module Begin
     desc 'version', 'Prints the version of this command'
     def version
       puts VERSION
+    end
+
+    no_commands do
+      def repository
+        Repository.new
+      end
     end
   end
 end

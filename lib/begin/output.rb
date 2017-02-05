@@ -14,8 +14,12 @@ module Begin
       puts "WARNING: #{value}".colorize :yellow
     end
 
-    def action(value)
+    def info(value)
       puts value
+    end
+
+    def action(value)
+      puts "#{value}..."
     end
 
     def success(value)
