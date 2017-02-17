@@ -17,7 +17,8 @@ module Begin
     end
 
     def list
-      Output.action 'Listing installed templates'
+      templates = Dir.glob(File.join([@template_dir, '*']))
+      templates.each { |x| Output.info(template_name(x)) }
     end
 
     def install(source_uri)
