@@ -45,6 +45,10 @@ module Begin
       raise IOError, "Template directory '#{@template_dir}' is not a directory"
     end
 
+    def list
+      Output.action 'Listing installed templates'
+    end
+
     def install(source_uri)
       name = template_name source_uri
       Output.action "Installing template '#{name}' from '#{source_uri}'"
@@ -53,6 +57,15 @@ module Begin
       Output.info "Installing to '#{path}'"
       try_install source_uri, path
       Output.success "Template '#{name}' successfully installed"
+    end
+
+    def uninstall(template)
+      Output.action "Uninstalling template #{template}"
+    end
+
+    def update(template = nil)
+      Output.action 'Updating all templates' unless template
+      Output.action "Updating template #{template}" if template
     end
 
     def try_install(source_uri, path)
