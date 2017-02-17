@@ -11,9 +11,7 @@ module Begin
       @parent_dir = Path.new(parent_dir, '.', 'Repository Parent')
       @parent_dir.ensure_dir_exists
       @repo_dir = Path.new(name, @parent_dir, 'Repository directory')
-      @repo_dir.make_dir
       @template_dir = Path.new('templates', @repo_dir, 'Templates directory')
-      @template_dir.make_dir
     end
 
     def list
@@ -24,6 +22,8 @@ module Begin
     def install(source_uri)
       name = template_name source_uri
       Output.action "Installing template '#{name}' from '#{source_uri}'"
+      @repo_dir.make_dir
+      @template_dir.make_dir
       path = template_path name
       path.ensure_dir_exists
       Output.info "Installing to '#{path}'"
