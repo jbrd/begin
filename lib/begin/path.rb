@@ -20,6 +20,12 @@ module Begin
       raise IOError, "#{@help} '#{@path}' does not exist"
     end
 
+    def ensure_symlink_exists
+      ensure_exists
+      return if File.symlink? @path
+      raise IOError, "#{@help} '#{@path}' is not a symbolic link"
+    end
+
     def ensure_dir_exists
       ensure_exists
       return if File.directory? @path

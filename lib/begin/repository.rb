@@ -1,5 +1,6 @@
 require 'begin/output'
 require 'begin/path'
+require 'begin/template'
 require 'rugged'
 require 'uri'
 
@@ -25,14 +26,17 @@ module Begin
       @repo_dir.make_dir
       @template_dir.make_dir
       path = template_path name
-      path.ensure_dir_exists
       Output.info "Installing to '#{path}'"
       try_install source_uri, path
       Output.success "Template '#{name}' successfully installed"
     end
 
-    def uninstall(template)
-      Output.action "Uninstalling template #{template}"
+    def uninstall(template_name)
+      path = template_path template_name
+      template = template_from_path path
+      Output.action "Uninstalling template #{template_name}"
+      template.uninstall
+      Output.success "Template '#{template_name}' successfully uninstalled"
     end
 
     def update(template = nil)
@@ -41,13 +45,13 @@ module Begin
     end
 
     def try_install(source_uri, path)
-      try_install_git_template source_uri path
+      try_install_git_template source_uri, path
     rescue Rugged::NetworkError, Rugged::RepositoryError
       try_install_local_template source_uri, path
     end
 
     def try_install_git_template(source_uri, path)
-      Rugged::Repository.clone_at(source_uri, path)
+      Rugged::Repository.clone_at source_uri, path.to_s
       Output.success 'Template source was successfully git cloned'
     end
 
@@ -55,7 +59,7 @@ module Begin
       source_path = Path.new source_uri, '.', 'Source path'
       source_path.ensure_dir_exists
       begin
-        File.symlink(source_path, path)
+        File.symlink source_path, path
         Output.success "Created symbolic link to '#{source_path}'"
       rescue NotImplementedError
         raise NotImplementedError, 'TODO: Copy tree when symlinks not supported'
@@ -73,6 +77,11 @@ module Begin
 
     def template_path(template_name)
       Path.new template_name, @template_dir, 'Template directory'
+    end
+
+    def template_from_path(path)
+      return SymlinkTemplate.new(path) if File.symlink? path
+      GitTemplate.new path
     end
   end
 end
