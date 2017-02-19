@@ -25,21 +25,39 @@ module Begin
       @path.ensure_symlink_exists
     end
 
+    def self.install(source_uri, path)
+      source_path = Path.new source_uri, '.', 'Source path'
+      source_path.ensure_dir_exists
+      begin
+        File.symlink source_path, path
+        Output.success "Created symbolic link to '#{source_path}'"
+      rescue NotImplementedError
+        raise NotImplementedError, 'TODO: Copy tree when symlinks not supported'
+      end
+      SymlinkTemplate.new path
+    end
+
     def uninstall
       File.unlink @path
     end
   end
 
-  # Encapsulates the logic for templates that are installed as cloned
+  # Encapsulates the logic for templates that are installed as cloned
   # git repositories on the user's machine.
   class GitTemplate < Template
     def initialize(path)
       super path
-      @repository = Rugged::Repository.new path.to_s()
+      @repository = Rugged::Repository.new path.to_s
+    end
+
+    def self.install(source_uri, path)
+      Rugged::Repository.clone_at source_uri, path.to_s
+      Output.success 'Template source was successfully git cloned'
+      GitTemplate.new path
     end
 
     def uninstall
-     FileUtils.rm_rf @path
+      FileUtils.rm_rf @path
     end
   end
 end

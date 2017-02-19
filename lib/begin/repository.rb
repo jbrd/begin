@@ -31,6 +31,12 @@ module Begin
       Output.success "Template '#{name}' successfully installed"
     end
 
+    def try_install(source_uri, path)
+      GitTemplate.install source_uri, path
+    rescue Rugged::NetworkError, Rugged::RepositoryError
+      SymlinkTemplate.install source_uri, path
+    end
+
     def uninstall(template_name)
       path = template_path template_name
       template = template_from_path path
@@ -42,28 +48,6 @@ module Begin
     def update(template = nil)
       Output.action 'Updating all templates' unless template
       Output.action "Updating template #{template}" if template
-    end
-
-    def try_install(source_uri, path)
-      try_install_git_template source_uri, path
-    rescue Rugged::NetworkError, Rugged::RepositoryError
-      try_install_local_template source_uri, path
-    end
-
-    def try_install_git_template(source_uri, path)
-      Rugged::Repository.clone_at source_uri, path.to_s
-      Output.success 'Template source was successfully git cloned'
-    end
-
-    def try_install_local_template(source_uri, path)
-      source_path = Path.new source_uri, '.', 'Source path'
-      source_path.ensure_dir_exists
-      begin
-        File.symlink source_path, path
-        Output.success "Created symbolic link to '#{source_path}'"
-      rescue NotImplementedError
-        raise NotImplementedError, 'TODO: Copy tree when symlinks not supported'
-      end
     end
 
     def template_name(uri)
