@@ -15,39 +15,26 @@ module Begin
       @template_dir = Path.new('templates', @repo_dir, 'Templates directory')
     end
 
-    def list
-      templates = Dir.glob(File.join([@template_dir, '*']))
-      templates.each { |x| Output.info(template_name(x)) }
-    end
-
-    def install(source_uri)
-      name = template_name source_uri
-      Output.action "Installing template '#{name}' from '#{source_uri}'"
+    def install(source_uri, name)
       @repo_dir.make_dir
       @template_dir.make_dir
       path = template_path name
       Output.info "Installing to '#{path}'"
-      try_install source_uri, path
-      Output.success "Template '#{name}' successfully installed"
+      begin
+        return GitTemplate.install source_uri, path
+      rescue Rugged::NetworkError, Rugged::RepositoryError
+        return SymlinkTemplate.install source_uri, path
+      end
     end
 
-    def try_install(source_uri, path)
-      GitTemplate.install source_uri, path
-    rescue Rugged::NetworkError, Rugged::RepositoryError
-      SymlinkTemplate.install source_uri, path
+    def each
+      templates = Dir.glob(File.join([@template_dir, '*']))
+      templates.each { |x| yield template_name x }
     end
 
-    def uninstall(template_name)
-      path = template_path template_name
-      template = template_from_path path
-      Output.action "Uninstalling template #{template_name}"
-      template.uninstall
-      Output.success "Template '#{template_name}' successfully uninstalled"
-    end
-
-    def update(template = nil)
-      Output.action 'Updating all templates' unless template
-      Output.action "Updating template #{template}" if template
+    def template(name)
+      path = template_path name
+      template_from_path path
     end
 
     def template_name(uri)

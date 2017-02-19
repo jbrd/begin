@@ -13,22 +13,30 @@ module Begin
 
     desc 'list', 'List installed templates'
     def list
-      repository.list
+      repository.each { |x| Output.info(x) }
     end
 
     desc 'install PATH', 'Installs a template given its PATH'
     def install(path)
-      repository.install path
+      repo = repository
+      template_name = repo.template_name path
+      Output.action "Installing template '#{template_name}' from '#{path}'"
+      repo.install path, template_name
+      Output.success "Template '#{template_name}' successfully installed"
     end
 
     desc 'uninstall TEMPLATE', 'Uninstalls the named TEMPLATE'
     def uninstall(template)
-      repository.uninstall template
+      template_impl = repository.template template
+      Output.action "Uninstalling template #{template}"
+      template_impl.uninstall
+      Output.success "Template '#{template}' successfully uninstalled"
     end
 
     desc 'update [TEMPLATE]', 'Updates all templates or one specific TEMPLATE'
     def update(template = nil)
-      repository.update template
+      Output.action 'Updating all templates' unless template
+      Output.action "Updating template #{template}" if template
     end
 
     desc 'version', 'Prints the version of this command'
