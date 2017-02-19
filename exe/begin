@@ -7,4 +7,5 @@ begin
   Begin::CLI.start(ARGV)
 rescue StandardError => e
   Begin::Output.error e.message
+  exit 1
 end
