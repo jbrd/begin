@@ -35,8 +35,16 @@ module Begin
 
     desc 'update [TEMPLATE]', 'Updates all templates or one specific TEMPLATE'
     def update(template = nil)
-      Output.action 'Updating all templates' unless template
-      Output.action "Updating template #{template}" if template
+      if template
+        template_impl = repository.template template
+        Output.action "Updating template #{template}"
+        template_impl.update
+      else
+        repository.each do |x|
+          Output.action "Updating template #{x}"
+          repository.template(x).update
+        end
+      end
     end
 
     desc 'version', 'Prints the version of this command'
