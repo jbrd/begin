@@ -19,6 +19,25 @@ module Begin
     def update
       raise NotImplementedError
     end
+
+    def run(target_dir)
+      target_dir = Path.new target_dir, '.', 'Directory'
+      target_dir.ensure_dir_exists
+      process @path, target_dir
+    end
+
+    def process(source_dir, target_dir)
+      Dir.glob(File.join([source_dir, '*'])).each do |entry|
+        source_path = Path.new entry, '.', 'Source'
+        if source_path.directory?
+          target_path = Path.new source_path.basename, target_dir, 'Directory'
+          target_path.make_dir
+          process source_path, target_path
+        else
+          source_path.copy_to target_dir
+        end
+      end
+    end
   end
 
   # Encapsulates the logic for templates that are installed as symlinks

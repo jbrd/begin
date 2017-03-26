@@ -28,7 +28,7 @@ module Begin
 
     def ensure_dir_exists
       ensure_exists
-      return if File.directory? @path
+      return if directory?
       raise IOError, "#{@help} '#{@path}' is not a directory"
     end
 
@@ -44,6 +44,21 @@ module Begin
         Dir.mkdir @path
       end
       ensure_dir_exists
+    end
+
+    def copy_to(destination)
+      ensure_exists
+      destination.ensure_dir_exists
+      Begin::Output.action "Making #{@help} '#{@path}'"
+      FileUtils.cp @path, destination
+    end
+
+    def basename
+      File.basename @path
+    end
+
+    def directory?
+      File.directory? @path
     end
   end
 end

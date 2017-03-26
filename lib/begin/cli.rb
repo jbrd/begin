@@ -8,7 +8,9 @@ module Begin
   class CLI < Thor
     desc 'new TEMPLATE', 'Begin a new project by running the named TEMPLATE'
     def new(template)
-      Output.action "Running template: #{template}"
+      template_impl = repository.template template
+      Output.action "Running template '#{template}'"
+      template_impl.run Dir.getwd
     end
 
     desc 'list', 'List installed templates'
