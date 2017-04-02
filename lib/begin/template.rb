@@ -1,6 +1,9 @@
+require 'begin/input'
 require 'begin/output'
 require 'begin/path'
 require 'fileutils'
+require 'mustache'
+require 'mustache/template'
 require 'rugged'
 require 'uri'
 
@@ -23,20 +26,70 @@ module Begin
     def run(target_dir)
       target_dir = Path.new target_dir, '.', 'Directory'
       target_dir.ensure_dir_exists
-      process @path, target_dir
+      keys = collect_keys @path
+      context = prompt_user_for_keys keys
+      process @path, target_dir, context
     end
 
-    def process(source_dir, target_dir)
-      Dir.glob(File.join([source_dir, '*'])).each do |entry|
-        source_path = Path.new entry, '.', 'Source'
-        if source_path.directory?
-          target_path = Path.new source_path.basename, target_dir, 'Directory'
-          target_path.make_dir
-          process source_path, target_path
+    def parse_tokens_for_keys(tokens)
+      result = []
+      tokens.each do |x|
+        next unless x.is_a? Array
+        if x.length > 2 && x[0] == :mustache && x[1] == :fetch
+          result.push x[2][0]
         else
-          source_path.copy_to target_dir
+          result.concat parse_tokens_for_keys(x)
         end
       end
+      result
+    end
+
+    def collect_keys_from_file(path)
+      return collect_keys(path) if path.directory?
+      file = File.open path, 'rb'
+      contents = file.read
+      template = Mustache::Template.new contents
+      parse_tokens_for_keys(template.tokens)
+    end
+
+    def collect_keys(current_dir)
+      keys = Set.new
+      Dir.glob(File.join([current_dir, '*'])).each do |entry|
+        path = Path.new entry, '.', 'Source'
+        keys.merge collect_keys_from_file(path)
+      end
+      keys
+    end
+
+    def prompt_user_for_keys(keys)
+      context = {}
+      keys.each do |key|
+        unless context.key? key
+          value = Input.prompt(key + ': ')
+          context[key] = value
+        end
+      end
+      context
+    end
+
+    def process(source_dir, target_dir, context)
+      Dir.glob(File.join([source_dir, '*'])).each do |entry|
+        source_path = Path.new entry, '.', 'Source'
+        target_path = Path.new source_path.basename, target_dir, 'Source'
+        if source_path.directory?
+          target_path.make_dir
+          process source_path, target_path, context
+        else
+          process_file source_path, target_path, context
+        end
+      end
+    end
+
+    def process_file(source_path, target_path, context)
+      file = File.open source_path, 'rb'
+      contents = file.read
+      out = File.open target_path, 'wb'
+      out.write Mustache.render(contents, context)
     end
   end
 

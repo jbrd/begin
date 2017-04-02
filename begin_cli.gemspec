@@ -11,6 +11,7 @@ def add_dependencies(spec)
   spec.add_development_dependency 'rubocop'
 
   spec.add_dependency 'colorize'
+  spec.add_dependency 'mustache'
   spec.add_dependency 'rugged'
   spec.add_dependency 'thor'
 end
