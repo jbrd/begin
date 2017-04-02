@@ -5,6 +5,8 @@ require 'begin/output'
 
 begin
   Begin::CLI.start(ARGV)
+rescue Interrupt
+  exit 1
 rescue StandardError => e
   Begin::Output.error e.message
   exit 1
