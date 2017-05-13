@@ -11,6 +11,7 @@ module Begin
       template_impl = repository.template template
       Output.action "Running template '#{template}'"
       template_impl.run Dir.getwd
+      Output.success "Template '#{template}' successfully run"
     end
 
     desc 'list', 'List installed templates'

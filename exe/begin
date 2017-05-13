@@ -6,6 +6,7 @@ require 'begin/output'
 begin
   Begin::CLI.start(ARGV)
 rescue Interrupt
+  Begin::Output.error 'Process Interrupted'
   exit 1
 rescue StandardError => e
   Begin::Output.error e.message

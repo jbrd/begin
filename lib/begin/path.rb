@@ -60,5 +60,9 @@ module Begin
     def directory?
       File.directory? @path
     end
+
+    def exists?
+      File.exist? @path
+    end
   end
 end

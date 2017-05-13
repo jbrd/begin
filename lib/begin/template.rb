@@ -1,15 +1,17 @@
+require 'begin/config'
 require 'begin/input'
 require 'begin/output'
 require 'begin/path'
 require 'fileutils'
 require 'mustache'
-require 'mustache/template'
 require 'rugged'
 require 'uri'
 
 module Begin
   # Represents an installed template on the user's machine.
   class Template
+    CONFIG_NAME = '.begin.yml'.freeze
+
     def initialize(path)
       @path = path
       @path.ensure_dir_exists
@@ -23,63 +25,27 @@ module Begin
       raise NotImplementedError
     end
 
+    def config_path
+      Path.new CONFIG_NAME, @path, 'Config'
+    end
+
     def run(target_dir)
       target_dir = Path.new target_dir, '.', 'Directory'
       target_dir.ensure_dir_exists
-      keys = collect_keys @path
-      context = prompt_user_for_keys keys
-      process @path, target_dir, context
+      config = Config.from_file config_path
+      context = Input.prompt_user_for_tag_values config.tags
+      exclusion = Set.new [CONFIG_NAME]
+      process @path, target_dir, context, exclusion
     end
 
-    def parse_tokens_for_keys(tokens)
-      result = []
-      tokens.each do |x|
-        next unless x.is_a? Array
-        if x.length > 2 && x[0] == :mustache && x[1] == :fetch
-          result.push x[2][0]
-        else
-          result.concat parse_tokens_for_keys(x)
-        end
-      end
-      result
-    end
-
-    def collect_keys_from_file(path)
-      return collect_keys(path) if path.directory?
-      file = File.open path, 'rb'
-      contents = file.read
-      template = Mustache::Template.new contents
-      parse_tokens_for_keys(template.tokens)
-    end
-
-    def collect_keys(current_dir)
-      keys = Set.new
-      Dir.glob(File.join([current_dir, '*'])).each do |entry|
-        path = Path.new entry, '.', 'Source'
-        keys.merge collect_keys_from_file(path)
-      end
-      keys
-    end
-
-    def prompt_user_for_keys(keys)
-      context = {}
-      keys.each do |key|
-        unless context.key? key
-          value = Input.prompt(key + ': ')
-          context[key] = value
-        end
-      end
-      context
-    end
-
-    def process(source_dir, target_dir, context)
+    def process(source_dir, target_dir, context, exclusion)
       Dir.glob(File.join([source_dir, '*'])).each do |entry|
         source_path = Path.new entry, '.', 'Source'
         target_path = Path.new source_path.basename, target_dir, 'Source'
         if source_path.directory?
           target_path.make_dir
-          process source_path, target_path, context
-        else
+          process source_path, target_path, context, {}
+        elsif !exclusion.include? entry
           process_file source_path, target_path, context
         end
       end
