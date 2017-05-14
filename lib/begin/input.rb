@@ -9,8 +9,8 @@ module Begin
         value = STDIN.gets
         raise EOFError if value.nil?
         return value.chomp
-      rescue
-        STDOUT.puts ''
+      rescue StandardError, Interrupt
+        Output.newline
         raise
       end
     end

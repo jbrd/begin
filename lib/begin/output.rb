@@ -7,23 +7,27 @@ module Begin
     module_function
 
     def error(value)
-      puts "ERROR: #{value}".colorize :red
+      STDERR.puts "ERROR: #{value}".colorize :red
     end
 
     def warning(value)
-      puts "WARNING: #{value}".colorize :yellow
+      STDOUT.puts "WARNING: #{value}".colorize :yellow
     end
 
     def info(value)
-      puts value
+      STDOUT.puts value
     end
 
     def action(value)
-      puts "#{value}..."
+      STDOUT.puts "#{value}..."
     end
 
     def success(value)
-      puts value.colorize :green
+      STDOUT.puts value.colorize :green
+    end
+
+    def newline
+      STDOUT.puts ''
     end
   end
 end
