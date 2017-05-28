@@ -7,6 +7,14 @@ module Begin
       @help = help
     end
 
+    def eql?(other)
+      @path.eql?(other.to_str)
+    end
+
+    def hash
+      @path.hash
+    end
+
     def to_s
       @path
     end
@@ -39,17 +47,18 @@ module Begin
     end
 
     def make_dir
-      unless File.exist? @path
-        Begin::Output.action "Making #{@help} '#{@path}'"
-        Dir.mkdir @path
-      end
+      Dir.mkdir @path unless File.exist? @path
       ensure_dir_exists
+    end
+
+    def make_parent_dirs
+      parent = File.dirname @path
+      FileUtils.mkdir_p parent
     end
 
     def copy_to(destination)
       ensure_exists
       destination.ensure_dir_exists
-      Begin::Output.action "Making #{@help} '#{@path}'"
       FileUtils.cp @path, destination
     end
 
@@ -63,6 +72,10 @@ module Begin
 
     def exists?
       File.exist? @path
+    end
+
+    def contains?(path)
+      path.to_str.start_with? @path
     end
   end
 end

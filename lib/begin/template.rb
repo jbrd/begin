@@ -34,21 +34,55 @@ module Begin
       target_dir.ensure_dir_exists
       config = Config.from_file config_path
       context = Input.prompt_user_for_tag_values config.tags
-      exclusion = Set.new [CONFIG_NAME]
-      process @path, target_dir, context, exclusion
+      paths = process_path_names @path, target_dir, context
+      process_files paths, context
     end
 
-    def process(source_dir, target_dir, context, exclusion)
-      Dir.glob(File.join([source_dir, '*'])).each do |entry|
+    def ensure_no_back_references(source_path, expanded_path, target_dir)
+      return if target_dir.contains? expanded_path
+      err = 'Backward-reference detected in expanded ' \
+            "template path. Details to follow.\n"
+      err += "Source Path:     #{source_path}\n"
+      err += "Expanded Path:   #{expanded_path}\n"
+      err += "Expected Parent: #{target_dir}\n"
+      raise err
+    end
+
+    def ensure_no_conflicts(paths, source_path, target_path)
+      return unless paths.key? target_path
+      err = "Conflicting templates detected. Details to follow.\n"
+      err += "(1) Source File: #{source_path}\n"
+      err += "(1) ..Writes To: #{target_path}\n"
+      err += "(2) Source File: #{paths[target_path]}\n"
+      err += "(2) ..Writes To: #{target_path}\n"
+      raise err
+    end
+
+    def process_path_name(source_path, target_dir, context)
+      expanded_name = Mustache.render source_path.basename, context
+      expanded_path = Path.new expanded_name, target_dir, 'Target'
+      ensure_no_back_references source_path, expanded_path, target_dir
+      expanded_path
+    end
+
+    def process_path_names_in_dir(source, target, paths, working_set, context)
+      Dir.glob(File.join([source, '*'])).each do |entry|
         source_path = Path.new entry, '.', 'Source'
-        target_path = Path.new source_path.basename, target_dir, 'Source'
-        if source_path.directory?
-          target_path.make_dir
-          process source_path, target_path, context, {}
-        elsif !exclusion.include? entry
-          process_file source_path, target_path, context
-        end
+        target_path = process_path_name source_path, target, context
+        ensure_no_conflicts paths, source_path, target_path
+        paths[target_path] = source_path
+        working_set.push [source_path, target_path] if source_path.directory?
       end
+    end
+
+    def process_path_names(source_dir, target_dir, context)
+      paths = {}
+      working_set = [[source_dir, target_dir]]
+      until working_set.empty?
+        source, target = working_set.pop
+        process_path_names_in_dir source, target, paths, working_set, context
+      end
+      paths
     end
 
     def process_file(source_path, target_path, context)
@@ -56,6 +90,17 @@ module Begin
       contents = file.read
       out = File.open target_path, 'wb'
       out.write Mustache.render(contents, context)
+    end
+
+    def process_files(paths, context)
+      paths.each do |target, source|
+        target.make_parent_dirs
+        if source.directory?
+          target.make_dir
+        else
+          process_file source, target, context
+        end
+      end
     end
   end
 
