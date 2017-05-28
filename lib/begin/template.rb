@@ -18,10 +18,12 @@ module Begin
     end
 
     def uninstall
+      # Must be implemented in base class
       raise NotImplementedError
     end
 
     def update
+      # Must be implemented in base class
       raise NotImplementedError
     end
 
