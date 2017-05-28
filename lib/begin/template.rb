@@ -1,5 +1,4 @@
 require 'begin/config'
-require 'begin/input'
 require 'begin/output'
 require 'begin/path'
 require 'fileutils'
@@ -31,11 +30,13 @@ module Begin
       Path.new CONFIG_NAME, @path, 'Config'
     end
 
-    def run(target_dir)
+    def config
+      Config.from_file config_path
+    end
+
+    def run(target_dir, context)
       target_dir = Path.new target_dir, '.', 'Directory'
       target_dir.ensure_dir_exists
-      config = Config.from_file config_path
-      context = Input.prompt_user_for_tag_values config.tags
       paths = process_path_names @path, target_dir, context
       process_files paths, context
     end
