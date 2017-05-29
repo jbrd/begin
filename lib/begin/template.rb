@@ -53,7 +53,7 @@ module Begin
 
     def ensure_no_conflicts(paths, source_path, target_path)
       return unless paths.key? target_path
-      err = "Conflicting templates detected. Details to follow.\n"
+      err = "File path collision detected. Details to follow.\n"
       err += "(1) Source File: #{source_path}\n"
       err += "(1) ..Writes To: #{target_path}\n"
       err += "(2) Source File: #{paths[target_path]}\n"
