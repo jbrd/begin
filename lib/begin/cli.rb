@@ -3,15 +3,22 @@ require 'begin/output'
 require 'begin/repository'
 require 'begin/version'
 require 'thor'
+require 'yaml'
 
 module Begin
   # The CLI interface for the application.
   class CLI < Thor
     desc 'new TEMPLATE', 'Begin a new project by running the named TEMPLATE'
+    option :yaml, desc: 'Do not prompt user for tag values. ' \
+                        'Instead, take them from given YAML file.'
     def new(template)
       template_impl = repository.template template
+      if options[:yaml]
+        context = YAML.load_file(options[:yaml])
+      else
+        context = Input.prompt_user_for_tag_values(template_impl.config.tags)
+      end
       Output.action "Running template '#{template}'"
-      context = Input.prompt_user_for_tag_values template_impl.config.tags
       template_impl.run Dir.getwd, context
       Output.success "Template '#{template}' successfully run"
     end
