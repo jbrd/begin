@@ -82,7 +82,7 @@ To install on your system, obtain the Ruby gem with:
 
 ## Development
 
-* After checking out the repo, run ```bin/setup``` to install dependencies
+* After checking out the repo, run ```bundle install --path vendor/bundle``` to install dependencies
 * Run ```bundle exec begin``` to use the gem in this directory, ignoring other installed copies of this gem
 * Run ```bundle exec rubocop``` to ensure the code conforms to style guidelines
 * To package this gem from source, run ```bundle exec rake install```
