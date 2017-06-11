@@ -2,6 +2,13 @@
 
 A terminal command for beginning new projects quickly.
 
+## Installation
+
+To install on your system, obtain the Ruby gem with:
+
+    $ gem install begin_cli
+
+
 ## Overview
 
 ### Running A Template
@@ -71,13 +78,6 @@ A terminal command for beginning new projects quickly.
 * Update templates with ```begin update```
 * Get help with ```begin help```
 * Print the command version with ```begin version```
-
-
-## Installation
-
-To install on your system, obtain the Ruby gem with:
-
-    $ gem install begin_cli
 
 
 ## Development
