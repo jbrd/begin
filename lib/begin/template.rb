@@ -69,7 +69,7 @@ module Begin
     end
 
     def process_path_names_in_dir(source, target, paths, working_set, context)
-      Dir.glob(File.join([source, '*'])).each do |entry|
+      source.dir_contents.each do |entry|
         source_path = Path.new entry, '.', 'Source'
         target_path = process_path_name source_path, target, context
         ensure_no_conflicts paths, source_path, target_path

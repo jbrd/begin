@@ -40,10 +40,9 @@ module Begin
       raise IOError, "#{@help} '#{@path}' is not a directory"
     end
 
-    def ensure_dir_is_empty
-      ensure_dir_exists
-      return if Dir.glob(File.join([path, '*'])).empty?
-      raise IOError, "#{@help} '#{@path}' is not empty"
+    def dir_contents
+      escaped_path = @path.gsub(/[\\\{\}\[\]\*\?\.]/) { |x| '\\' + x }
+      Dir.glob(File.join([escaped_path, '*']))
     end
 
     def make_dir

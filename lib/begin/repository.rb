@@ -28,7 +28,7 @@ module Begin
     end
 
     def each
-      templates = Dir.glob(File.join([@template_dir, '*']))
+      templates = @template_dir.dir_contents
       templates.each { |x| yield template_name x }
     end
 
