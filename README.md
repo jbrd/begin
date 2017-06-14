@@ -82,9 +82,10 @@ To install on your system, obtain the Ruby gem with:
 
 ## Development
 
+* Ensure [Bundler](http://bundler.io/) is installed on your system
 * After checking out the repo, run ```bundle install --path vendor/bundle``` to install dependencies
 * Run ```bundle exec begin``` to use the gem in this directory, ignoring other installed copies of this gem
-* Run ```bundle exec rubocop``` to ensure the code conforms to style guidelines
+* Run ```bundle exec rake``` to run test specs and ensure the code conforms to style guidelines
 * To package this gem from source, run ```bundle exec rake install```
 * To release a new version, update the version number in `version.rb`, and then run ```bundle exec rake release```
 
