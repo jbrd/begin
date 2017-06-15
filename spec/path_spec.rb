@@ -7,13 +7,13 @@ describe Begin::Path do
       File.write File.join(path, 'a'), 'abc'
       File.write File.join(path, '[b]'), 'def'
       File.write File.join(path, '{c}'), 'ghi'
-      expect path.directory?
+      expect(path.directory?).to eq true
       s = Set.new
       path.dir_contents.each { |x| s.add(x) }
-      expect s.include?('a')
-      expect s.include?('[b]')
-      expect s.include?('{c}')
-      expect s.length == 3
+      expect(s.include?(Begin::Path.new('a', path, 'a'))).to eq true
+      expect(s.include?(Begin::Path.new('[b]', path, '[b]'))).to eq true
+      expect(s.include?(Begin::Path.new('{c}', path, '{c}'))).to eq true
+      expect(s.length).to eq 3
     end
   end
 end
