@@ -89,10 +89,8 @@ module Begin
     end
 
     def process_file(source_path, target_path, context)
-      file = File.open source_path, 'rb'
-      contents = file.read
-      out = File.open target_path, 'wb'
-      out.write Mustache.render(contents, context)
+      contents = File.read source_path
+      File.write target_path, Mustache.render(contents, context)
     end
 
     def process_files(paths, context)
