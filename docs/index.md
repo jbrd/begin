@@ -1,21 +1,15 @@
-# begin
+# User Guide
+
+## Introduction
 
 `begin` is a terminal command for running logic-less project templates. Templates are just [git](https://git-scm.com)
 repositories whose files and directories are copied to the working directory when run. Directory names, file names, 
 and file content can contain [Mustache](https://mustache.github.io/mustache.5.html) tags - the values of which are
 prompted for in the terminal and substituted when the template is run.
 
-## Installation
+{% include guide_example_01.ext %}
 
-To install on your system, obtain the Ruby gem with:
-
-```bash
-$ gem install begin_cli
-```
-
-## Overview
-
-### Installing A Template
+## Installing A Template
 
 * Install a template with the ```begin install``` command, e.g:
 
@@ -25,7 +19,7 @@ $ gem install begin_cli
 
 * Once you have installed a template, you may run it...
 
-### Running A Template
+## Running A Template
 
 * Run a template with the ```begin new``` command, e.g:
 
@@ -33,7 +27,7 @@ $ gem install begin_cli
   $ begin new template
   ```
 
-### Template Structure
+## Template Structure
 
 * A template is just a [Git](https://git-scm.com) repository
 
@@ -48,7 +42,7 @@ $ gem install begin_cli
   $ begin new latex-document
   ```
 
-### Template Tags
+## Template Tags
 
 * File names, directory names, and file content can contain [Mustache](https://mustache.github.io/mustache.5.html) tags
 
@@ -80,7 +74,7 @@ $ gem install begin_cli
   Template 'latex-document' successfully run
   ```
 
-### Terminal Commands
+## Terminal Commands
 
 * Run a template with ```begin new```
 
@@ -95,30 +89,4 @@ $ gem install begin_cli
 * Get help with ```begin help```
 
 * Print the command version with ```begin version```
-
-
-
-## Development
-
-* Ensure [Bundler](http://bundler.io/) is installed on your system
-* After checking out the repo, run ```bundle install --path vendor/bundle``` to install dependencies
-* Run ```bundle exec begin``` to use the gem in this directory, ignoring other installed copies of this gem
-* Run ```bundle exec rake``` to run test specs and ensure the code conforms to style guidelines
-* To package this gem from source, run ```bundle exec rake install```
-* To release a new version, update the version number in `version.rb`, and then run ```bundle exec rake release```
-
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/jbrd/begin. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-
-## Contributors
-
-* James Bird (jbrd)
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 

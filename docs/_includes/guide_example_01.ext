@@ -1,0 +1,15 @@
+<div class="terminal">
+  <div class="header"></div>
+  <div class="shell">
+	<p><span class="path">~</span><span class="prompt">$</span>begin new <em>latex-document</em><br/>
+		Title: My Amazing New Document<br/>
+		Author: John Smith<br/>
+		Sections (CTRL+D to stop): Introduction<br/>
+		Sections (CTRL+D to stop): Background<br/>
+		Sections (CTRL+D to stop): ^D<br/>
+		Running template 'latex-document'...<br/>
+		Template 'latex-document' successfully run<br/>
+	</p>
+	<p class="end"><span class="path">~</span><span class="prompt">$</span></p>
+  </div>
+</div>
