@@ -61,8 +61,16 @@ module Begin
       raise err
     end
 
+    def ensure_name_not_empty(source_path, expanded_name)
+      return unless expanded_name.empty?
+      err = "Mustache evaluation resulted in an empty file name...\n"
+      err += "... whilst evaluating: #{source_path}"
+      raise err
+    end
+
     def process_path_name(source_path, target_dir, context)
       expanded_name = Mustache.render source_path.basename, context
+      ensure_name_not_empty source_path, expanded_name
       expanded_path = Path.new expanded_name, target_dir, 'Target'
       ensure_no_back_references source_path, expanded_path, target_dir
       expanded_path
