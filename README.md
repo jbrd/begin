@@ -13,6 +13,9 @@ To install on your system, obtain the Ruby gem with:
 $ gem install begin_cli
 ```
 
+Read the [Installation Guide](https://jbrd.github.io/begin/install.html) for more in-depth examples
+for various operating systems.
+
 ## Overview
 
 ### Installing A Template
