@@ -5,6 +5,10 @@ repositories whose files and directories are copied to the working directory whe
 and file content can contain [Mustache](https://mustache.github.io/mustache.5.html) tags - the values of which are
 prompted for in the terminal and substituted when the template is run.
 
+<div align="center">
+  <img alt="Begin Terminal Example" src="docs/assets/terminal.png" />
+</div>
+
 ## Installation
 
 To install on your system, obtain the Ruby gem with:
