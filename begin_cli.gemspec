@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'begin_cli'
   spec.version       = Begin::VERSION
   spec.authors       = ['James Bird']
-  spec.email         = ['jbrd@users.noreply.github.com']
+  spec.email         = ['jbrd.git@outlook.com']
 
   spec.summary       = 'A terminal command for beginning new projects quickly.'
   spec.homepage      = 'http://github.com/jbrd/begin'
