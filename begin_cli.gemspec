@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['jbrd.git@outlook.com']
 
   spec.summary       = 'A terminal command for beginning new projects quickly.'
-  spec.homepage      = 'http://github.com/jbrd/begin'
+  spec.homepage      = 'https://jbrd.github.io/begin'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject \
