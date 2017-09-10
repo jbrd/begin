@@ -41,8 +41,9 @@ module Begin
       uri = URI(uri)
       path_bits = uri.path.split '/'
       name = path_bits.last
-      name = name[6, name.length - 1] if name.start_with? 'begin-'
-      name = name[6, name.length - 1] if name.start_with? 'begin_'
+      name.slice! 'begin-'
+      name.slice! 'begin_'
+      name.chomp! '.git'
       name
     end
 
