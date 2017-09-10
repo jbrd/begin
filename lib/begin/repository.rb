@@ -1,7 +1,7 @@
 require 'begin/output'
 require 'begin/path'
 require 'begin/template'
-require 'rugged'
+require 'git'
 require 'uri'
 
 module Begin
@@ -16,15 +16,24 @@ module Begin
     end
 
     def install(source_uri, name)
+      path = install_prerequisites(name)
+      begin
+        return GitTemplate.install source_uri, path
+      rescue
+        unless source_uri.include? '://'
+          return SymlinkTemplate.install source_uri, path
+        end
+        raise
+      end
+    end
+
+    def install_prerequisites(name)
       @repo_dir.make_dir
       @template_dir.make_dir
       path = template_path name
+      raise "A template is already installed at: #{path}" if path.exists?
       Output.info "Installing to '#{path}'"
-      begin
-        return GitTemplate.install source_uri, path
-      rescue Rugged::NetworkError, Rugged::RepositoryError
-        return SymlinkTemplate.install source_uri, path
-      end
+      path
     end
 
     def each

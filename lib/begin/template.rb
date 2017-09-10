@@ -2,8 +2,8 @@ require 'begin/config'
 require 'begin/output'
 require 'begin/path'
 require 'fileutils'
+require 'git'
 require 'mustache'
-require 'rugged'
 require 'uri'
 
 module Begin
@@ -147,13 +147,20 @@ module Begin
   class GitTemplate < Template
     def initialize(path)
       super path
-      @repository = Rugged::Repository.new path.to_s
+      @repository = Git.open(path.to_s)
+    end
+
+    def self.format_git_error_message(e)
+      partition = e.message.partition('2>&1:')
+      partition[2]
     end
 
     def self.install(source_uri, path)
-      Rugged::Repository.clone_at source_uri, path.to_s
+      Git.clone(source_uri, path.to_s)
       Output.success 'Template source was successfully git cloned'
       GitTemplate.new path
+    rescue Git::GitExecuteError => e
+      raise format_git_error_message(e)
     end
 
     def uninstall
@@ -161,46 +168,48 @@ module Begin
     end
 
     def check_repository
-      if @repository.head_unborn?
-        raise "HEAD is unborn in local repository. Please fix: #{@path}"
+      @repository.revparse('HEAD')
+      if @repository.current_branch.include? 'detached'
+        raise "HEAD is detached in local repository. Please fix: #{@path}"
       end
-      return unless @repository.head_detached?
-      raise "HEAD is detached in local repository. Please fix: #{@path}"
+    rescue Git::GitExecuteError => e
+      error = "HEAD is not valid in local repository. Please fix: #{@path}\n"
+      error += format_git_error_message(e)
+      raise error
     end
 
-    def local_branch
-      ref = @repository.head
-      raise "HEAD is not a branch. Please fix: #{@path}" unless ref.branch?
-      branch = @repository.branches[ref.name]
-      return branch if branch
-      raise "Could not find branch '#{ref.name}' in local repository: #{@path}"
+    def check_tracking_branch
+      @repository.revparse('@{u}')
+    rescue
+      raise "Local branch '#{@repository.current_branch}' does not track " \
+            "an upstream branch in local repository: #{@path}"
     end
 
-    def upstream_branch(branch)
-      upstream = branch.upstream
-      return upstream if upstream
-      raise "Local branch '#{branch.name}' does not track an upstream " \
-            "branch in local repository: #{@path}"
+    def check_untracked_changes
+      message = 'Local repository contains untracked changes. ' \
+                "Please fix: #{@path}"
+      raise message unless @repository.status.untracked.empty?
     end
 
-    def fast_forward(from_branch, to_branch)
-      upstream_commit = to_branch.target
-      analysis = @repository.merge_analysis(upstream_commit)
-      unless analysis.include? :fastforward
-        raise "Cannot fast-forward local branch '#{from_branch.name}' " \
-              "to match upstream branch '#{to_branch.name}' " \
-              "in local repository: #{@path}"
-      end
-      @repository.reset to_branch.target, :hard
+    def check_pending_changes
+      not_added = @repository.status.added.empty?
+      not_deleted = @repository.status.deleted.empty?
+      not_changed = @repository.status.changed.empty?
+      message = 'Local repository contains modified / staged files. ' \
+                "Please fix: #{@path}"
+      raise message unless not_added && not_deleted && not_changed
     end
 
     def update
       check_repository
-      branch = local_branch
-      upstream = upstream_branch local_branch
-      upstream.remote.fetch
-      return if branch.upstream.target == branch.target
-      fast_forward(branch, upstream)
+      check_tracking_branch
+      check_untracked_changes
+      check_pending_changes
+      begin
+        @repository.pull
+      rescue Git::GitExecuteError => e
+        raise format_git_error_message(e)
+      end
     end
   end
 end
