@@ -17,7 +17,7 @@ module Begin
 
     def prompt_user_for_tag(tag, level = 0, in_array = false)
       indent = '  ' * level
-      array_msg = in_array ? ' (CTRL+D to stop)' : ''
+      array_msg = in_array ? " (#{eof_shortcut} to stop)" : ''
       case tag
       when HashTag
         Output.info "#{indent}#{tag.label}#{array_msg}:"
@@ -47,6 +47,15 @@ module Begin
         context[x.key] = prompt_user_for_tag(x, level) unless x.array
       end
       context
+    end
+
+    # Returns the keyboard accelerator shortcut for the EOF signal,
+    # which is dependant on the host terminal
+    def eof_shortcut
+      if ENV.key? 'ComSpec'
+        return 'CTRL+Z' if ENV['ComSpec'].upcase.end_with? '\CMD.EXE'
+      end
+      'CTRL+D'
     end
   end
 end
