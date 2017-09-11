@@ -19,25 +19,7 @@
   sudo apt-get install ruby
   ```
 
-* (Required) Install the Ruby development toolchain:
-
-  ```bash
-  sudo apt-get install ruby-dev
-  ```
-
-* (Required) Install CMake:
-
-  ```bash
-  sudo apt-get install cmake
-  ```
-
-* (Required) Install pkg-config:
-
-  ```bash
-  sudo apt-get install pkg-config
-  ```
-
-* (Required) Install begin:
+* (Required) Install Begin:
 
   ```bash
   gem install begin_cli
@@ -45,17 +27,13 @@
 
 ## Mac OS X
 
-* (Recommended) Install a Package Manager (such as Homebrew)
+* Ruby ships with OS X. But if you do need to install it, the easiest way to install Ruby on OS X is to use a package manager such as [Homebrew](http://brew.sh/):
 
-  * Ensure your Package Manager is up-to-date
+  ```bash
+  brew install ruby
+  ```
 
-* (Required) Ensure CMake is installed on your system
-
-* (Required) Ensure Ruby is installed on your system
-
-* (Required) Ensure pkg-config is installed on your syste
-
-* (Required) Install Begin
+* (Required) Install Begin:
 
   ```bash
   gem install begin_cli
@@ -63,15 +41,7 @@
 
 ## Windows 10
 
-### Bash for Windows (Recommended)
-
-* (Required) Install Bash for Windows by running the Bash command and following the instructions
-
-* (Required) Launch Bash for Windows and follow the installation instructions above for Linux (Ubuntu)
-
-* This is the easiest way of getting Begin up and running on Windows
-
-### Native (Difficult)
+### Native
 
 * (Required) Install Ruby
 
@@ -79,56 +49,7 @@
     install on Windows
 
   * Ensure Ruby has been added to your `PATH` environment variable
-
-  * Ensure the Ruby development toolchain is installed.
   
-* (Required) Install the Ruby development toolchain
-
-  * [RubyInstaller](https://rubyinstaller.org/) has an option to install this once
-    Ruby has been installed
-    
-  * Otherwise, run `ridk install` in the Command Prompt to install it
-
-* (Required) Install CMake:
-
-  * Note that the `cmake` package on its own does not contain all the necessary dependencies required to generate MSYS Makefiles. Instead, you should pick one of the following:
-
-    * For 32-bit systems, launch your MSYS environment and run:
-    
-      ```bash
-      pacman -S mingw-w64-i686-cmake
-      ```
-
-    * For 64-bit systems, launch your MSYS environment and run:
-    
-      ```bash
-      pacman -S mingw-w64-x86_64-cmake
-      ```
-
-* (Required) Install pkg-config:
-
-  * Launch your MSYS environment and run:
-  
-    ```bash
-    pacman -S pkg-config
-    ```
-
-* (Required) Install libssh2:
-
-  * Launch your MSYS environment and run:
-  
-    ```bash
-    pacman -S libssh2-devel
-    ```
-
-* (Required) Install Rugged (the libgit2 bindings for Ruby that Begin depends on):
-
-  * Launch a Windows command prompt and run:
-  
-    ```bash
-    gem install rugged
-    ```
-
 * (Required) Install Begin
 
   * Launch a Windows command prompt and run:
@@ -136,4 +57,14 @@
     ```bash
     gem install begin_cli
     ```
+
+### Windows Subsystem for Linux (WSL)
+
+* Since the Windows 10 Anniversary Update, Windows is now capable of running a user-mode Linux distribution
+
+* (Required) Enable Windows Subsystem for Linux (WSL) and then install Bash for Windows
+
+  * [Read this guide](https://msdn.microsoft.com/en-gb/commandline/wsl/install_guide) for more details
+
+* (Required) Launch Bash for Windows and follow the installation instructions above for Linux (Ubuntu)
 
