@@ -9,6 +9,7 @@ prompted for in the terminal and substituted when the template is run.
   <img alt="Begin Terminal Example" src="docs/assets/terminal.png" />
 </div>
 
+
 ## Installation
 
 To install on your system, obtain the Ruby gem with:
@@ -19,6 +20,7 @@ $ gem install begin_cli
 
 Read the [Installation Guide](https://jbrd.github.io/begin/install.html) for more in-depth examples
 for various operating systems.
+
 
 ## Overview
 
@@ -32,6 +34,7 @@ for various operating systems.
 
 * Once you have installed a template, you may run it...
 
+
 ### Running A Template
 
 * Run a template with the ```begin new``` command, e.g:
@@ -40,13 +43,12 @@ for various operating systems.
   $ begin new template
   ```
 
+
 ### Template Structure
 
 * A template is just a [Git](https://git-scm.com) repository
 
-
 * A template can therefore contain any number of files and directories, and can be easily shared with others
-
 
 * A template name can optionally start with `begin-`. This prefix is ignored and stripped by the command automatically, e.g:
 
@@ -54,6 +56,14 @@ for various operating systems.
   $ begin install path/to/begin-latex-document.git
   $ begin new latex-document
   ```
+
+* An example template can be found at (https://github.com/jbrd/begin-latex-document)[https://github.com/jbrd/begin-latex-document], e.g:
+
+  ```bash
+  $ begin install https://github.com/jbrd/begin-latex-document.git
+  $ begin new latex-document
+  ```
+
 
 ### Template Tags
 
@@ -103,6 +113,10 @@ for various operating systems.
 
 * Print the command version with ```begin version```
 
+
+## Example Templates
+
+* An example template can be found at: [https://github.com/jbrd/begin-latex-document.git](https://github.com/jbrd/begin-latex-document.git)
 
 
 ## Development
