@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'begin/output'
 require 'begin/path'
 require 'begin/template'

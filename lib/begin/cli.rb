@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'begin/input'
 require 'begin/output'
 require 'begin/repository'

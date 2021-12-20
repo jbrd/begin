@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Begin
   # All console input is routed through this module
   module Input

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'begin/config'
 require 'begin/output'
 require 'begin/path'
@@ -9,7 +11,7 @@ require 'uri'
 module Begin
   # Represents an installed template on the user's machine.
   class Template
-    CONFIG_NAME = '.begin.yml'.freeze
+    CONFIG_NAME = '.begin.yml'
 
     def initialize(path)
       @path = path
@@ -153,8 +155,8 @@ module Begin
       @repository = Git.open(path.to_s)
     end
 
-    def self.format_git_error_message(e)
-      partition = e.message.partition('2>&1:')
+    def self.format_git_error_message(err)
+      partition = err.message.partition('2>&1:')
       partition[2]
     end
 
