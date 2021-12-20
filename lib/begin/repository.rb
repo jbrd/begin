@@ -18,11 +18,10 @@ module Begin
     def install(source_uri, name)
       path = install_prerequisites(name)
       begin
-        return GitTemplate.install source_uri, path
-      rescue
-        unless source_uri.include? '://'
-          return SymlinkTemplate.install source_uri, path
-        end
+        GitTemplate.install source_uri, path
+      rescue StandardError
+        return SymlinkTemplate.install source_uri, path unless source_uri.include? '://'
+
         raise
       end
     end
@@ -32,6 +31,7 @@ module Begin
       @template_dir.make_dir
       path = template_path name
       raise "A template is already installed at: #{path}" if path.exists?
+
       Output.info "Installing to '#{path}'"
       path
     end
@@ -62,6 +62,7 @@ module Begin
 
     def template_from_path(path)
       return SymlinkTemplate.new(path) if File.symlink? path
+
       GitTemplate.new path
     end
   end

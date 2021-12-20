@@ -8,7 +8,8 @@ module Begin
       begin
         value = STDIN.gets
         raise EOFError if value.nil?
-        return value.chomp
+
+        value.chomp
       rescue StandardError, Interrupt
         Output.newline
         raise

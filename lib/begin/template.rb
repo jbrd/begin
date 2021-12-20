@@ -43,6 +43,7 @@ module Begin
 
     def ensure_no_back_references(source_path, expanded_path, target_dir)
       return if target_dir.contains? expanded_path
+
       err = 'Backward-reference detected in expanded ' \
             "template path. Details to follow.\n"
       err += "Source Path:     #{source_path}\n"
@@ -53,6 +54,7 @@ module Begin
 
     def ensure_no_conflicts(paths, source_path, target_path)
       return unless paths.key? target_path
+
       err = "File path collision detected. Details to follow.\n"
       err += "(1) Source File: #{source_path}\n"
       err += "(1) ..Writes To: #{target_path}\n"
@@ -63,6 +65,7 @@ module Begin
 
     def ensure_name_not_empty(source_path, expanded_name)
       return unless expanded_name.empty?
+
       err = "Mustache evaluation resulted in an empty file name...\n"
       err += "... whilst evaluating: #{source_path}"
       raise err
@@ -180,7 +183,7 @@ module Begin
 
     def check_tracking_branch
       @repository.revparse('@{u}')
-    rescue
+    rescue StandardError
       raise "Local branch '#{@repository.current_branch}' does not track " \
             "an upstream branch in local repository: #{@path}"
     end

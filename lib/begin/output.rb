@@ -7,7 +7,7 @@ module Begin
     module_function
 
     def error(value)
-      STDERR.puts "ERROR: #{value}".colorize :red
+      warn "ERROR: #{value}".colorize :red
     end
 
     def warning(value)

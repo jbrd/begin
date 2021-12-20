@@ -13,11 +13,11 @@ module Begin
                         'Instead, take them from given YAML file.'
     def new(template)
       template_impl = repository.template template
-      if options[:yaml]
-        context = YAML.load_file(options[:yaml])
-      else
-        context = Input.prompt_user_for_tag_values(template_impl.config.tags)
-      end
+      context = if options[:yaml]
+                  YAML.load_file(options[:yaml])
+                else
+                  Input.prompt_user_for_tag_values(template_impl.config.tags)
+                end
       Output.action "Running template '#{template}'"
       template_impl.run Dir.getwd, context
       Output.success "Template '#{template}' successfully run"
