@@ -43,6 +43,7 @@ module Begin
 
     def self.from_config(key, value)
       return HashTag.from_config(key, value) if value.include? 'tags'
+
       ValueTag.from_config(key, value)
     end
   end
@@ -82,9 +83,11 @@ module Begin
 
     def self.from_config_hash(config)
       return [] unless config.include?('tags') && config['tags'].is_a?(Hash)
+
       config['tags'].each.map do |key, value|
         raise "Invalid template. Expected value of '#{key}' to be a Hash" \
           unless value.is_a? Hash
+
         Tag.from_config key, value
       end
     end
