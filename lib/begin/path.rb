@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Begin
   # The canonical file path representation used throughout the application.
   # Paths are immediately expanded into absolute file paths on construction
